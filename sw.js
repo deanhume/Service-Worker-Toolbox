@@ -6,33 +6,29 @@
 
   // Turn on debug logging, visible in the Developer Tools' console.
   global.toolbox.options.debug = true;
-  global.toolbox.options.networkTimeoutSeconds = 2;
 
   // Precache the following items
-  //toolbox.precache([ '/images/info.svg', '/images/cv.svg', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js']);
+  toolbox.precache([ '/images/info.svg', '/images/cv.svg', '/images/contact.svg', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js']);
 
-  toolbox.router.get('/images/(.*)', global.toolbox.cacheFirst, {
+  // The route for the images
+  toolbox.router.get('/images/(.*)', global.toolbox.fastest, {
     cache: {
           name: 'svg',
-          // Store up to 10 entries in that cache.
           maxEntries: 10,
-          // Expire any entries that are older than 30 seconds.
           maxAgeSeconds: 60
         },
   });
 
+  // The route for any requests from the googleapis origin
   toolbox.router.get('/(.*)', global.toolbox.cacheFirst, {
-    // Use a dedicated cache for the responses, separate from the default cache.
     cache: {
       name: 'googleapis',
-      // Store up to 10 entries in that cache.
       maxEntries: 10,
-      // Expire any entries that are older than 30 seconds.
       maxAgeSeconds: 30
     },
-    // origin allows us to restrict the handler to requests whose origin matches a regexp.
-    // In this case, we want to match anything that ends in 'ytimg.com'.
-    origin: /\.googleapis\.com$/
+    origin: /\.googleapis\.com$/,
+    // Set a timeout threshold of 2 seconds
+    networkTimeoutSeconds: 2
   });
 
   // By default, all requests that don't match our custom handler will use the toolbox.networkFirst
