@@ -6,28 +6,34 @@
 
   // Turn on debug logging, visible in the Developer Tools' console.
   global.toolbox.options.debug = true;
+  global.toolbox.options.networkTimeoutSeconds = 2;
 
   // Precache the following items
-  toolbox.precache(['/images/contact.svg', '/images/info.svg', '/images/cv.svg']);
+  //toolbox.precache([ '/images/info.svg', '/images/cv.svg', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js']);
 
-  // Set up a handler for HTTP GET requests:
-  // - '/(.*)' means any URL pathname will be matched.
-  // - toolbox.cacheFirst let us to use the predefined cache strategy for those requests.
-  // global.toolbox.router.get('/(.svg)', global.toolbox.cacheFirst, {
-  //   // Use a dedicated cache for the responses, separate from the default cache.
-  //   cache: {
-  //     name: 'svgs',
-  //     // Store up to 10 entries in that cache.
-  //     maxEntries: 10,
-  //     // Expire any entries that are older than 30 seconds.
-  //     maxAgeSeconds: 60,
-  //     // The network timeout that we want to apply
-  //     networkTimeoutSeconds: 10
-  //   },
-  //   // origin allows us to restrict the handler to requests whose origin matches a regexp.
-  //   // In this case, we want to match anything that ends in 'ytimg.com'.
-  //   //origin: /\.ytimg\.com$/
-  // });
+  toolbox.router.get('/images/(.*)', global.toolbox.cacheFirst, {
+    cache: {
+          name: 'svg',
+          // Store up to 10 entries in that cache.
+          maxEntries: 10,
+          // Expire any entries that are older than 30 seconds.
+          maxAgeSeconds: 60
+        },
+  });
+
+  toolbox.router.get('/(.*)', global.toolbox.cacheFirst, {
+    // Use a dedicated cache for the responses, separate from the default cache.
+    cache: {
+      name: 'googleapis',
+      // Store up to 10 entries in that cache.
+      maxEntries: 10,
+      // Expire any entries that are older than 30 seconds.
+      maxAgeSeconds: 30
+    },
+    // origin allows us to restrict the handler to requests whose origin matches a regexp.
+    // In this case, we want to match anything that ends in 'ytimg.com'.
+    origin: /\.googleapis\.com$/
+  });
 
   // By default, all requests that don't match our custom handler will use the toolbox.networkFirst
   // cache strategy, and their responses will be stored in the default cache.
