@@ -2,26 +2,25 @@
   'use strict';
 
   // Load the sw-tookbox library.
-  importScripts('/bower_components/sw-toolbox/sw-toolbox.js');
+  importScripts('./bower_components/sw-toolbox/sw-toolbox.js');
 
   // Turn on debug logging, visible in the Developer Tools' console.
   global.toolbox.options.debug = true;
 
-  // Precache the following items
-  toolbox.precache([ '/images/info.svg', '/images/cv.svg', '/images/contact.svg', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js']);
-
   // The route for the images
-  toolbox.router.get('/images/(.*)', global.toolbox.fastest, {
+  toolbox.router.get('/images/(.*)', global.toolbox.cacheFirst, {
     cache: {
           name: 'svg',
+          maxEntries: 10,
           maxAgeSeconds: 86400 // cache for a day
-        },
+        }
   });
 
   // The route for any requests from the googleapis origin
   toolbox.router.get('/(.*)', global.toolbox.cacheFirst, {
     cache: {
       name: 'googleapis',
+      maxEntries: 10,
       maxAgeSeconds: 86400 // cache for a day
     },
     origin: /\.googleapis\.com$/,
