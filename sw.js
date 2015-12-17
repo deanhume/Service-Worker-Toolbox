@@ -14,8 +14,7 @@
   toolbox.router.get('/images/(.*)', global.toolbox.fastest, {
     cache: {
           name: 'svg',
-          maxEntries: 10,
-          maxAgeSeconds: 60
+          maxAgeSeconds: 86400 // cache for a day
         },
   });
 
@@ -23,8 +22,7 @@
   toolbox.router.get('/(.*)', global.toolbox.cacheFirst, {
     cache: {
       name: 'googleapis',
-      maxEntries: 10,
-      maxAgeSeconds: 30
+      maxAgeSeconds: 86400 // cache for a day
     },
     origin: /\.googleapis\.com$/,
     // Set a timeout threshold of 2 seconds
